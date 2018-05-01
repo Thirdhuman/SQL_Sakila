@@ -1,4 +1,4 @@
-
+# Robert Orr's thing
 
 -- 1a. You need a list of all the actors who have Display the first and last names of all actors from the table actor. 
 -- 1b. Display the first and last name of each actor in a single column in upper case letters. Name the column Actor Name. 
@@ -35,7 +35,6 @@
 -- 8b. How would you display the view that you created in 8a?
 -- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
 -- 
-
 
 use sakila;
 -- 1a. You need a list of all the actors who have Display the first and last names of all actors from the table actor. 
@@ -207,39 +206,30 @@ INNER JOIN city ci
 ON a.city_id = ci.city_id
 INNER JOIN country coun
 ON ci.country_id = coun.country_id;
--- 7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
-USE Sakila;
-SELECT name, SUM(p.amount)
+-- 7h. List the top five FinalFive in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+SELECT c.name, SUM(p.amount) AS Gross_Revenue
 FROM category c
-INNER JOIN film_category fc
-INNER JOIN inventory i
-ON i.film_id = fc.film_id
-INNER JOIN rental r
-ON r.inventory_id = i.inventory_id
-INNER JOIN payment p
-GROUP BY name
-LIMIT 5;
+JOIN film_category fc ON (c.category_id=fc.category_id)
+JOIN inventory i ON (fc.film_id=i.film_id)
+JOIN rental r ON (i.inventory_id=r.inventory_id)
+JOIN payment p ON (r.rental_id=p.rental_id)
+GROUP BY c.name ORDER BY Gross_Revenue  LIMIT 5;
+
 -- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. 
 -- If you haven't solved 7h, you can substitute another query to create a view.
-USE Sakila;
-CREATE VIEW top_five_grossing_genres AS
-SELECT name, SUM(p.amount)
+DROP VIEW IF EXISTS FinalFive;
+CREATE VIEW FinalFive AS
+SELECT c.name, SUM(p.amount) AS Gross_Revenue 
 FROM category c
-INNER JOIN film_category fc
-INNER JOIN inventory i
-ON i.film_id = fc.film_id
-INNER JOIN rental r
-ON r.inventory_id = i.inventory_id
-INNER JOIN payment p
-GROUP BY name 
-LIMIT 5;
+JOIN film_category fc ON (c.category_id=fc.category_id)
+JOIN inventory i ON (fc.film_id=i.film_id)
+JOIN rental r ON (i.inventory_id=r.inventory_id)
+JOIN payment p ON (r.rental_id=p.rental_id)
+GROUP BY c.name ORDER BY Gross_Revenue  LIMIT 5;
 -- -- 8b. How would you display the view that you created in 8a?
-SELECT * FROM top_five_grossing_genres;
+SELECT * FROM FinalFive;
 -- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
-DROP VIEW top_five_grossing_genres;
-
-
-
+DROP VIEW FinalFive;
 
 
 
